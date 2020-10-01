@@ -88,12 +88,67 @@ describe('Favorite blog', () => {
 
   test('Of bigger list is right blog', () => {
     const result = listHelper.favoriteBlog(listOfBlogs)
-    console.log(result)
     expect(result).toEqual(
       {
         title: 'Canonical string reduction',
         author: 'Edsger W. Dijkstra',
         likes: 12
+      }
+    )
+  })
+})
+
+describe('Most blogs', () => {
+  test('Of empty list is empty object', () => {
+    const result = listHelper.mostBlogs([])
+    expect(result).toEqual({})
+  })
+
+  test('When list has only one blog, equals of that values', () => {
+    const result = listHelper.mostBlogs(listOfBlogs.slice(0, 1))
+    expect(result).toEqual(
+      {
+        author: 'Michael Chan',
+        blogs: 1,
+      }
+    )
+  })
+
+  test('Of bigger list is right blog', () => {
+    const result = listHelper.mostBlogs(listOfBlogs)
+    console.log(result)
+    expect(result).toEqual(
+      {
+        author: 'Robert C. Martin',
+        blogs: 3
+      }
+    )
+  })
+})
+
+describe('Most likes', () => {
+  test('Of empty list is empty object', () => {
+    const result = listHelper.mostLikes([])
+    expect(result).toEqual({})
+  })
+
+  test('When list has only one blog, equals of that values', () => {
+    const result = listHelper.mostLikes(listOfBlogs.slice(0, 1))
+    expect(result).toEqual(
+      {
+        author: 'Michael Chan',
+        likes: 7,
+      }
+    )
+  })
+
+  test('Of bigger list is right blog', () => {
+    const result = listHelper.mostLikes(listOfBlogs)
+    console.log(result)
+    expect(result).toEqual(
+      {
+        author: 'Edsger W. Dijkstra',
+        likes: 17
       }
     )
   })
