@@ -20,9 +20,14 @@ test('Blogs are returned as JSON', async () => {
 })
 
 test('Blog DB contain two blogs', async () => {
-  const response = await api.get('/api/blogs')
-  
+  const response = await api.get('/api/blogs')  
   expect(response.body).toHaveLength(2)
+})
+
+test.only('Id propertyis is defined', async () => {
+  const { body } = await api.get('/api/blogs')
+  console.log('Body: ', body[0])
+  expect(body[0].id).toBeDefined()
 })
 
 afterAll(() => {
