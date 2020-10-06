@@ -24,10 +24,23 @@ test('Blog DB contain two blogs', async () => {
   expect(response.body).toHaveLength(2)
 })
 
-test.only('Id propertyis is defined', async () => {
+test('Id propertyis is defined', async () => {
   const { body } = await api.get('/api/blogs')
   console.log('Body: ', body[0])
   expect(body[0].id).toBeDefined()
+})
+
+test.only('New valid blog can be added', async () => {
+  await api
+    .post('/api/blogs')
+    .send(helper.newValidBlog)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')  
+  expect(response.body).toHaveLength(helper.initialBlogs.length + 1)
+  const blogTitles = response.body.map(blog => blog.title)
+  expect(blogTitles).toContain(helper.newValidBlog.title)
 })
 
 afterAll(() => {

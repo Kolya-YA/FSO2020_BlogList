@@ -15,6 +15,14 @@ const initialBlogs = [
   }
 ]
 
+const newValidBlog = {
+  title: 'Bla-Bla-Bla Blog — NEW',
+  author: 'New Pupkine A.',
+  url: 'https://new.blablabla.example.com',
+  likes: 100500
+}
+
 module.exports = {
-  initialBlogs
+  initialBlogs,
+  newValidBlog
 }
