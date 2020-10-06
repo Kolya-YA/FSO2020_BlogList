@@ -19,18 +19,17 @@ test('Blogs are returned as JSON', async () => {
     .expect('Content-Type', /application\/json/)
 })
 
-test('Blog DB contain two blogs', async () => {
+test('Blogs DB contain two blogs', async () => {
   const response = await api.get('/api/blogs')  
   expect(response.body).toHaveLength(2)
 })
 
 test('Id propertyis is defined', async () => {
   const { body } = await api.get('/api/blogs')
-  console.log('Body: ', body[0])
   expect(body[0].id).toBeDefined()
 })
 
-test.only('New valid blog can be added', async () => {
+test('New valid blog can be added', async () => {
   await api
     .post('/api/blogs')
     .send(helper.newValidBlog)
@@ -41,6 +40,13 @@ test.only('New valid blog can be added', async () => {
   expect(response.body).toHaveLength(helper.initialBlogs.length + 1)
   const blogTitles = response.body.map(blog => blog.title)
   expect(blogTitles).toContain(helper.newValidBlog.title)
+})
+
+test('Zero is default of likes', async () => {
+  const response = await api
+    .post('/api/blogs')
+    .send(helper.newBlogWithOutLikes)
+  expect(response.body.likes).toBe(0)
 })
 
 afterAll(() => {

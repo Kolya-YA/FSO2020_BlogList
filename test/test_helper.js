@@ -22,7 +22,14 @@ const newValidBlog = {
   likes: 100500
 }
 
+const newBlogWithOutLikes = {
+  title: 'Bla-Bla-Bla Blog — without likes',
+  author: 'No Likes Pupkine A.',
+  url: 'https://nolikes.blablabla.example.com'
+}
+
 module.exports = {
   initialBlogs,
-  newValidBlog
+  newValidBlog,
+  newBlogWithOutLikes
 }
