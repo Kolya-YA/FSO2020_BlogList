@@ -40,6 +40,13 @@ const newBlogWithOutUrl = {
   likes: 100500
 }
 
+const blogForUpdating = {
+  title: 'Title of updated blog',
+  author: 'Author of updated blog',
+  url: 'URL of updated blog',
+  likes: 222333
+}
+
 const blogsInDb = async () => {
   const blogs = await Blog.find({})
   return blogs.map(blog => blog.toJSON())
@@ -51,5 +58,6 @@ module.exports = {
   newBlogWithOutLikes,
   newBlogWithOutTitle,
   newBlogWithOutUrl,
+  blogForUpdating,
   blogsInDb
 }

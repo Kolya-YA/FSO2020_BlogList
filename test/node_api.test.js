@@ -64,7 +64,7 @@ test('New blog w/o URL return 400 Bad Request.', async () => {
 })
 
 describe('Deletion of a note', () => {
-  test.only('Succeeds with code "204" if "id" is valid', async () => {
+  test('Succeeds with code "204" if "id" is valid', async () => {
     const blogsAtStart = await helper.blogsInDb()
     const blogToDelete = blogsAtStart[0]
     
@@ -77,6 +77,56 @@ describe('Deletion of a note', () => {
 
     const titles = blogsAtEnd.map(blog => blog.title)
     expect(titles).not.toContain(blogToDelete.title)
+  })
+
+  test('"400" if "id" is not valid', async () => {
+    const notValidId = '222aaa333bbb'
+    
+    await api
+      .delete(`/api/blogs/${notValidId}`)
+      .expect(400)
+  })
+})
+
+describe('Updating blog', () => {
+  test('Valid updating returns "200"', async () => {
+    const response = await api.get('/api/blogs')
+    const idForUpdate = response.body[response.body.length - 1].id
+    await api
+      .put(`/api/blogs/${idForUpdate}`)
+      .send(helper.blogForUpdating)
+      .expect(200)
+  })
+
+  test('Correct updating title', async () => {
+    const response = await api.get('/api/blogs')
+    const idForUpdate = response.body[response.body.length - 1].id
+    const updatedBlog = await api
+      .put(`/api/blogs/${idForUpdate}`)
+      .send({ title: helper.blogForUpdating.title })
+
+    expect(updatedBlog.body.title).toBe(helper.blogForUpdating.title)
+  })
+
+  test('Correct updating likes', async () => {
+    const response = await api.get('/api/blogs')
+    const idForUpdate = response.body[response.body.length - 1].id
+    const updatedBlog = await api
+      .put(`/api/blogs/${idForUpdate}`)
+      .send({ likes: helper.blogForUpdating.likes })
+
+    expect(updatedBlog.body.likes).toBe(helper.blogForUpdating.likes)
+  })
+
+  test('Correct updating all fields (title, author, url and likes)', async () => {
+    const response = await api.get('/api/blogs')
+    const idForUpdate = response.body[response.body.length - 1].id
+    const updatedBlog = await api
+      .put(`/api/blogs/${idForUpdate}`)
+      .send(helper.blogForUpdating)
+    
+    delete updatedBlog.body.id
+    expect(updatedBlog.body).toEqual(helper.blogForUpdating)
   })
 })
 
