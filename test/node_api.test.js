@@ -49,6 +49,20 @@ test('Zero is default of likes', async () => {
   expect(response.body.likes).toBe(0)
 })
 
+test('New blog w/o titile return 400 Bad Request.', async () => {
+  await api
+    .post('/api/blogs')
+    .send(helper.newBlogWithOutTitle)
+    .expect(400)
+})
+
+test('New blog w/o URL return 400 Bad Request.', async () => {
+  await api
+    .post('/api/blogs')
+    .send(helper.newBlogWithOutUrl)
+    .expect(400)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })

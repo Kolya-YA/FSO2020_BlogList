@@ -28,8 +28,22 @@ const newBlogWithOutLikes = {
   url: 'https://nolikes.blablabla.example.com'
 }
 
+const newBlogWithOutTitle = {
+  author: 'New Pupkine A.',
+  url: 'https://new.blablabla.example.com',
+  likes: 100500
+}
+
+const newBlogWithOutUrl = {
+  title: 'Bla-Bla-Bla Blog — NEW',
+  author: 'New Pupkine A.',
+  likes: 100500
+}
+
 module.exports = {
   initialBlogs,
   newValidBlog,
-  newBlogWithOutLikes
+  newBlogWithOutLikes,
+  newBlogWithOutTitle,
+  newBlogWithOutUrl
 }
