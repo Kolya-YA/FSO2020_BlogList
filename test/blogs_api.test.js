@@ -2,12 +2,12 @@ const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const api = supertest(app)
-const helper = require('./test_helper')
+const blogsHelper = require('./blogs_test_helper')
 const Blog = require('../models/blog')
 
 beforeEach(async () => {
   await Blog.deleteMany({})
-  const blogObjects = helper.initialBlogs.map(blog => new Blog(blog))
+  const blogObjects = blogsHelper.initialBlogs.map(blog => new Blog(blog))
   const promiseArray = blogObjects.map(blog => blog.save())
   await Promise.all(promiseArray)
 })
@@ -32,47 +32,47 @@ test('Id propertyis is defined', async () => {
 test('New valid blog can be added', async () => {
   await api
     .post('/api/blogs')
-    .send(helper.newValidBlog)
+    .send(blogsHelper.newValidBlog)
     .expect(200)
     .expect('Content-Type', /application\/json/)
 
   const response = await api.get('/api/blogs')  
-  expect(response.body).toHaveLength(helper.initialBlogs.length + 1)
+  expect(response.body).toHaveLength(blogsHelper.initialBlogs.length + 1)
   const blogTitles = response.body.map(blog => blog.title)
-  expect(blogTitles).toContain(helper.newValidBlog.title)
+  expect(blogTitles).toContain(blogsHelper.newValidBlog.title)
 })
 
 test('Zero is default of likes', async () => {
   const response = await api
     .post('/api/blogs')
-    .send(helper.newBlogWithOutLikes)
+    .send(blogsHelper.newBlogWithOutLikes)
   expect(response.body.likes).toBe(0)
 })
 
 test('New blog w/o titile return 400 Bad Request.', async () => {
   await api
     .post('/api/blogs')
-    .send(helper.newBlogWithOutTitle)
+    .send(blogsHelper.newBlogWithOutTitle)
     .expect(400)
 })
 
 test('New blog w/o URL return 400 Bad Request.', async () => {
   await api
     .post('/api/blogs')
-    .send(helper.newBlogWithOutUrl)
+    .send(blogsHelper.newBlogWithOutUrl)
     .expect(400)
 })
 
 describe('Deletion of a note', () => {
   test('Succeeds with code "204" if "id" is valid', async () => {
-    const blogsAtStart = await helper.blogsInDb()
+    const blogsAtStart = await blogsHelper.blogsInDb()
     const blogToDelete = blogsAtStart[0]
     
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
       .expect(204)
 
-    const blogsAtEnd = await helper.blogsInDb()
+    const blogsAtEnd = await blogsHelper.blogsInDb()
     expect(blogsAtEnd).toHaveLength(blogsAtStart.length - 1)
 
     const titles = blogsAtEnd.map(blog => blog.title)
@@ -94,7 +94,7 @@ describe('Updating blog', () => {
     const idForUpdate = response.body[response.body.length - 1].id
     await api
       .put(`/api/blogs/${idForUpdate}`)
-      .send(helper.blogForUpdating)
+      .send(blogsHelper.blogForUpdating)
       .expect(200)
   })
 
@@ -103,9 +103,9 @@ describe('Updating blog', () => {
     const idForUpdate = response.body[response.body.length - 1].id
     const updatedBlog = await api
       .put(`/api/blogs/${idForUpdate}`)
-      .send({ title: helper.blogForUpdating.title })
+      .send({ title: blogsHelper.blogForUpdating.title })
 
-    expect(updatedBlog.body.title).toBe(helper.blogForUpdating.title)
+    expect(updatedBlog.body.title).toBe(blogsHelper.blogForUpdating.title)
   })
 
   test('Correct updating likes', async () => {
@@ -113,9 +113,9 @@ describe('Updating blog', () => {
     const idForUpdate = response.body[response.body.length - 1].id
     const updatedBlog = await api
       .put(`/api/blogs/${idForUpdate}`)
-      .send({ likes: helper.blogForUpdating.likes })
+      .send({ likes: blogsHelper.blogForUpdating.likes })
 
-    expect(updatedBlog.body.likes).toBe(helper.blogForUpdating.likes)
+    expect(updatedBlog.body.likes).toBe(blogsHelper.blogForUpdating.likes)
   })
 
   test('Correct updating all fields (title, author, url and likes)', async () => {
@@ -123,10 +123,10 @@ describe('Updating blog', () => {
     const idForUpdate = response.body[response.body.length - 1].id
     const updatedBlog = await api
       .put(`/api/blogs/${idForUpdate}`)
-      .send(helper.blogForUpdating)
+      .send(blogsHelper.blogForUpdating)
     
     delete updatedBlog.body.id
-    expect(updatedBlog.body).toEqual(helper.blogForUpdating)
+    expect(updatedBlog.body).toEqual(blogsHelper.blogForUpdating)
   })
 })
 
