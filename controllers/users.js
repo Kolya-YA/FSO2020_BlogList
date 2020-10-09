@@ -9,6 +9,19 @@ usersRouter.get('/', async (request, response) => {
 
 usersRouter.post('/', async (request, response) => {
   const body = request.body
+  
+  if (!body.password) {
+    const err = Error('Password is reuired!')
+    err.name = 'ValidationError'
+    throw err
+  }
+
+  if (body.password.length < 3) {
+    const err = Error('Password too short!')
+    err.name = 'ValidationError'
+    throw err
+  }
+
   const saltRounds = 10
   const pswHash = await bcrypt.hash(body.password, saltRounds)
 

@@ -9,10 +9,10 @@ const User = require('../models/user')
 beforeEach(async () => {
   await User.deleteMany({})
   const saltRounds = 10
-  const blogObjects = usersHelper.initialUsers.map(user => {
-    user.pswHash = bcrypt.hashSync(user.password, saltRounds)
+  const blogObjects = await Promise.all(usersHelper.initialUsers.map(async user => {
+    user.pswHash = await bcrypt.hash(user.password, saltRounds)
     return new User(user)
-  })
+  }))
   const promiseArray = blogObjects.map(user => user.save())
   await Promise.all(promiseArray)
 })
@@ -43,41 +43,72 @@ describe('Users DB tests', () => {
       const userLogins = response.body.map(user => user.login)
       expect(userLogins).toContain(usersHelper.newValidUser.login)
     })
+
+    test('New user w/o login return 400 Bad Request.', async () => {
+      const badUser = { ...usersHelper.newValidUser }
+      delete badUser.login
+      await api
+        .post('/api/users')
+        .send(badUser)
+        .expect(400)
+    })
+
+    test('New user w/o name return 400 Bad Request.', async () => {
+      const badUser = { ...usersHelper.newValidUser }
+      delete badUser.name
+      await api
+        .post('/api/users')
+        .send(badUser)
+        .expect(400)
+    })
+
+    test('New user w/o password return 400 Bad Request.', async () => {
+      const badUser = { ...usersHelper.newValidUser }
+      delete badUser.password
+      await api
+        .post('/api/users')
+        .send(badUser)
+        .expect(400)
+    })
+
+    test('New user with short login return 400 Bad Request.', async () => {
+      const badUser = { ...usersHelper.newValidUser }
+      badUser.login = badUser.login.substring(0, 2)
+      await api
+        .post('/api/users')
+        .send(badUser)
+        .expect(400)
+    })
+
+    test('New user with short password return 400 Bad Request.', async () => {
+      const usersAtStart = await usersHelper.usersInDb()
+      const badUser = { ...usersHelper.newValidUser }
+      badUser.password = badUser.password.substring(0, 2)
+      await api
+        .post('/api/users')
+        .send(badUser)
+        .expect(400)
+      
+      const usersAtEnd = await usersHelper.usersInDb()
+      expect(usersAtEnd).toHaveLength(usersAtStart.length)
+    })
+
+    test('New user with not unique login return 400 Bad Request.', async () => {
+      const usersAtStart = await usersHelper.usersInDb()
+      const result = await api
+        .post('/api/users')
+        .send(usersHelper.initialUsers[0])
+        .expect(400)
+        .expect('Content-Type', /application\/json/)
+
+      expect(result.body.message).toContain('`login` to be unique')
+
+      const usersAtEnd = await usersHelper.usersInDb()
+      expect(usersAtEnd).toHaveLength(usersAtStart.length)
+    })
   })
 })
 
-
-// test('Id propertyis is defined', async () => {
-//   const { body } = await api.get('/api/blogs')
-//   expect(body[0].id).toBeDefined()
-// })
-
-// test('New valid blog can be added', async () => {
-//   await api
-//     .post('/api/blogs')
-//     .send(blogsHelper.newValidBlog)
-//     .expect(200)
-//     .expect('Content-Type', /application\/json/)
-
-//   const response = await api.get('/api/blogs')  
-//   expect(response.body).toHaveLength(blogsHelper.initialBlogs.length + 1)
-//   const blogTitles = response.body.map(blog => blog.title)
-//   expect(blogTitles).toContain(blogsHelper.newValidBlog.title)
-// })
-
-// test('Zero is default of likes', async () => {
-//   const response = await api
-//     .post('/api/blogs')
-//     .send(blogsHelper.newBlogWithOutLikes)
-//   expect(response.body.likes).toBe(0)
-// })
-
-// test('New blog w/o titile return 400 Bad Request.', async () => {
-//   await api
-//     .post('/api/blogs')
-//     .send(blogsHelper.newBlogWithOutTitle)
-//     .expect(400)
-// })
 
 // test('New blog w/o URL return 400 Bad Request.', async () => {
 //   await api

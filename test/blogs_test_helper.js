@@ -44,7 +44,8 @@ const blogForUpdating = {
   title: 'Title of updated blog',
   author: 'Author of updated blog',
   url: 'URL of updated blog',
-  likes: 222333
+  likes: 222333,
+  user: []
 }
 
 const blogsInDb = async () => {
