@@ -9,10 +9,10 @@ const usersRouter = require('./controllers/users')
 const config = require('./utils/config')
 const middleware = require('./utils/middleware')
 
-mongoose.connect(config.MONGODB_URI, { 
+mongoose.connect(config.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  useFindAndModify: false, 
+  useFindAndModify: false,
   useCreateIndex: true
 })
 

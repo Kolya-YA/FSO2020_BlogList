@@ -1,12 +1,14 @@
 ###
 GET http://localhost:3003/api/blogs/
+###
+GET http://localhost:3003/api/users/
 
 ###
 POST http://localhost:3003/api/blogs/
 content-type: application/json
 
 {
-  "title": "Bool-bool4",
+  "title": "Bool-bool333",
   "author": "_YA",
   "url": "http://google.com",
   "likes": 32

@@ -12,6 +12,18 @@ const initialBlogs = [
     author: 'Pupkine B.',
     url: 'https://blablabla2.example.com',
     likes: 200
+  },
+  {
+    title: 'Bla-Bla-Bla Blog — 3',
+    author: 'Pupkine C.',
+    url: 'https://blablabla3.example.com',
+    likes: 300
+  },
+  {
+    title: 'Bla-Bla-Bla Blog — 4',
+    author: 'Pupkine D.',
+    url: 'https://blablabla4.example.com',
+    likes: 400
   }
 ]
 
@@ -45,7 +57,7 @@ const blogForUpdating = {
   author: 'Author of updated blog',
   url: 'URL of updated blog',
   likes: 222333,
-  user: []
+  user: {}
 }
 
 const blogsInDb = async () => {

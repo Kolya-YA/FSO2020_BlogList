@@ -1,4 +1,4 @@
-const Users = require('../models/user')
+const User = require('../models/user')
 
 const initialUsers = [
   {
@@ -29,7 +29,7 @@ const newValidUser = {
 }
 
 const usersInDb = async () => {
-  const users = await Users.find({})
+  const users = await User.find({})
   return users.map(user => user.toJSON())
 }
 
