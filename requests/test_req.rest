@@ -13,3 +13,12 @@ content-type: application/json
   "url": "http://google.com",
   "likes": 32
 }
+
+###
+POST http://localhost:3003/api/login/
+content-type: application/json
+
+{
+  "login": "pupkine-2@example.com",
+  "password": "123pupkine2"
+}

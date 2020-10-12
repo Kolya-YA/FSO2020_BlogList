@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt')
-const usersRouter = require('express').Router() 
+const usersRouter = require('express').Router()
 const User = require('../models/user')
 
 usersRouter.get('/', async (request, response) => {
@@ -9,7 +9,7 @@ usersRouter.get('/', async (request, response) => {
 
 usersRouter.post('/', async (request, response) => {
   const body = request.body
-  
+
   if (!body.password) {
     const err = Error('Password is reuired!')
     err.name = 'ValidationError'
