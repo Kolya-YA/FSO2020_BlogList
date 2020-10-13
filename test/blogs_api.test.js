@@ -41,7 +41,7 @@ beforeEach(async () => {
   await Promise.all(usersPromiseArray)
 })
 
-describe.only('Init DB', () => {
+describe('Init DB', () => {
   test('Blogs are returned as JSON', async () => {
     await api
       .get('/api/blogs')
@@ -64,8 +64,10 @@ describe.only('Init DB', () => {
 describe('Create new Blog', () => {
 
   test('New valid blog can be added', async () => {
+    const userToken = await blogsHelper.userToken()
     await api
       .post('/api/blogs')
+      .set('Authorization', userToken)
       .send(blogsHelper.newValidBlog)
       .expect(200)
       .expect('Content-Type', /application\/json/)
@@ -76,94 +78,100 @@ describe('Create new Blog', () => {
     expect(blogTitles).toContain(blogsHelper.newValidBlog.title)
   })
 
-  //   test('Zero is default of likes', async () => {
-  //     const response = await api
-  //       .post('/api/blogs')
-  //       .send(blogsHelper.newBlogWithOutLikes)
-  //     expect(response.body.likes).toBe(0)
-  //   })
+  test('Zero is default of likes', async () => {
+    const userToken = await blogsHelper.userToken()
+    const response = await api
+      .post('/api/blogs')
+      .set('Authorization', userToken)
+      .send(blogsHelper.newBlogWithOutLikes)
+    expect(response.body.likes).toBe(0)
+  })
 
-  //   test('New blog w/o titile return 400 Bad Request.', async () => {
-  //     await api
-  //       .post('/api/blogs')
-  //       .send(blogsHelper.newBlogWithOutTitle)
-  //       .expect(400)
-  //   })
-
-  //   test('New blog w/o URL return 400 Bad Request.', async () => {
-  //     await api
-  //       .post('/api/blogs')
-  //       .send(blogsHelper.newBlogWithOutUrl)
-  //       .expect(400)
-  //   })
-  // })
-
-  // describe('Deletion of a note', () => {
-  //   test('Succeeds with code "204" if "id" is valid', async () => {
-  //     const blogsAtStart = await blogsHelper.blogsInDb()
-  //     const blogToDelete = blogsAtStart[0]
-
-  //     await api
-  //       .delete(`/api/blogs/${blogToDelete.id}`)
-  //       .expect(204)
-
-  //     const blogsAtEnd = await blogsHelper.blogsInDb()
-  //     expect(blogsAtEnd).toHaveLength(blogsAtStart.length - 1)
-
-  //     const titles = blogsAtEnd.map(blog => blog.title)
-  //     expect(titles).not.toContain(blogToDelete.title)
-  //   })
-
-  //   test('"400" if "id" is not valid', async () => {
-  //     const notValidId = '222aaa333bbb'
-
-  //     await api
-  //       .delete(`/api/blogs/${notValidId}`)
-  //       .expect(400)
-  //   })
-})
-
-describe('Updating blog', () => {
-  test('Valid updating returns "200"', async () => {
-    const response = await api.get('/api/blogs')
-    const idForUpdate = response.body[response.body.length - 1].id
+  test('New blog w/o titile return 400 Bad Request.', async () => {
+    const userToken = await blogsHelper.userToken()
     await api
-      .put(`/api/blogs/${idForUpdate}`)
-      .send(blogsHelper.blogForUpdating)
-      .expect(200)
+      .post('/api/blogs')
+      .set('Authorization', userToken)
+      .send(blogsHelper.newBlogWithOutTitle)
+      .expect(400)
   })
 
-  test('Correct updating title', async () => {
-    const response = await api.get('/api/blogs')
-    const idForUpdate = response.body[response.body.length - 1].id
-    const updatedBlog = await api
-      .put(`/api/blogs/${idForUpdate}`)
-      .send({ title: blogsHelper.blogForUpdating.title })
-
-    expect(updatedBlog.body.title).toBe(blogsHelper.blogForUpdating.title)
-  })
-
-  test('Correct updating likes', async () => {
-    const response = await api.get('/api/blogs')
-    const idForUpdate = response.body[response.body.length - 1].id
-    const updatedBlog = await api
-      .put(`/api/blogs/${idForUpdate}`)
-      .send({ likes: blogsHelper.blogForUpdating.likes })
-
-    expect(updatedBlog.body.likes).toBe(blogsHelper.blogForUpdating.likes)
-  })
-
-  test('Correct updating all fields (title, author, url and likes)', async () => {
-    const response = await api.get('/api/blogs')
-    const idForUpdate = response.body[response.body.length - 1].id
-    const updatedBlog = await api
-      .put(`/api/blogs/${idForUpdate}`)
-      .send(blogsHelper.blogForUpdating)
-
-    delete updatedBlog.body.id
-    expect(updatedBlog.body).toEqual(blogsHelper.blogForUpdating)
+  test('New blog w/o URL return 400 Bad Request.', async () => {
+    const userToken = await blogsHelper.userToken()
+    await api
+      .post('/api/blogs')
+      .set('Authorization', userToken)
+      .send(blogsHelper.newBlogWithOutUrl)
+      .expect(400)
   })
 })
+
+// describe('Deletion of a note', () => {
+//   test('Succeeds with code "204" if "id" is valid', async () => {
+//     const blogsAtStart = await blogsHelper.blogsInDb()
+//     const blogToDelete = blogsAtStart[0]
+
+//     await api
+//       .delete(`/api/blogs/${blogToDelete.id}`)
+//       .expect(204)
+
+//     const blogsAtEnd = await blogsHelper.blogsInDb()
+//     expect(blogsAtEnd).toHaveLength(blogsAtStart.length - 1)
+
+//     const titles = blogsAtEnd.map(blog => blog.title)
+//     expect(titles).not.toContain(blogToDelete.title)
+//   })
+
+//   test('"400" if "id" is not valid', async () => {
+//     const notValidId = '222aaa333bbb'
+
+//     await api
+//       .delete(`/api/blogs/${notValidId}`)
+//       .expect(400)
+//   })
+// })
+
+// describe('Updating blog', () => {
+//   test('Valid updating returns "200"', async () => {
+//     const response = await api.get('/api/blogs')
+//     const idForUpdate = response.body[response.body.length - 1].id
+//     await api
+//       .put(`/api/blogs/${idForUpdate}`)
+//       .send(blogsHelper.blogForUpdating)
+//       .expect(200)
+//   })
+
+//   test('Correct updating title', async () => {
+//     const response = await api.get('/api/blogs')
+//     const idForUpdate = response.body[response.body.length - 1].id
+//     const updatedBlog = await api
+//       .put(`/api/blogs/${idForUpdate}`)
+//       .send({ title: blogsHelper.blogForUpdating.title })
+
+//     expect(updatedBlog.body.title).toBe(blogsHelper.blogForUpdating.title)
+//   })
+
+//   test('Correct updating likes', async () => {
+//     const response = await api.get('/api/blogs')
+//     const idForUpdate = response.body[response.body.length - 1].id
+//     const updatedBlog = await api
+//       .put(`/api/blogs/${idForUpdate}`)
+//       .send({ likes: blogsHelper.blogForUpdating.likes })
+
+//     expect(updatedBlog.body.likes).toBe(blogsHelper.blogForUpdating.likes)
+//   })
+
+//   test('Correct updating all fields (title, author, url and likes)', async () => {
+//     const response = await api.get('/api/blogs')
+//     const idForUpdate = response.body[response.body.length - 1].id
+//     const updatedBlog = await api
+//       .put(`/api/blogs/${idForUpdate}`)
+//       .send(blogsHelper.blogForUpdating)
+
+//     delete updatedBlog.body.id
+//     expect(updatedBlog.body).toEqual(blogsHelper.blogForUpdating)
+//   })
+// })
 
 afterAll(() => {
   mongoose.connection.close()
