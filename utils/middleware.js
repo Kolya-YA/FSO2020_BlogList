@@ -8,6 +8,9 @@ const errorHandler = (error, req, res, next) => {
   case 'JsonWebTokenError':
     res.status(401).send({ name: error.name, message: error.message })
     break
+  case 'CastError':
+    res.status(204).send({ name: error.name, message: error.message })
+    break
   default:
     next(error)
   }
