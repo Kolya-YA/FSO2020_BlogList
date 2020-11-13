@@ -120,7 +120,7 @@ describe('Users DB tests', () => {
 //   test('Succeeds with code "204" if "id" is valid', async () => {
 //     const blogsAtStart = await blogsHelper.blogsInDb()
 //     const blogToDelete = blogsAtStart[0]
-    
+
 //     await api
 //       .delete(`/api/blogs/${blogToDelete.id}`)
 //       .expect(204)
@@ -134,7 +134,7 @@ describe('Users DB tests', () => {
 
 //   test('"400" if "id" is not valid', async () => {
 //     const notValidId = '222aaa333bbb'
-    
+
 //     await api
 //       .delete(`/api/blogs/${notValidId}`)
 //       .expect(400)
@@ -177,7 +177,7 @@ describe('Users DB tests', () => {
 //     const updatedBlog = await api
 //       .put(`/api/blogs/${idForUpdate}`)
 //       .send(blogsHelper.blogForUpdating)
-    
+
 //     delete updatedBlog.body.id
 //     expect(updatedBlog.body).toEqual(blogsHelper.blogForUpdating)
 //   })

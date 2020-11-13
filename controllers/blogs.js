@@ -24,6 +24,7 @@ blogsRouter.post('/', async (request, response) => {
   })
 
   const addedBlog = await newBlog.save()
+  await addedBlog.populate('user', { name: 1, login: 1 }).execPopulate()
   user.blogs = user.blogs.concat(addedBlog._id)
   await user.save()
   response.status(200).json(addedBlog)
@@ -33,7 +34,6 @@ blogsRouter.delete('/:id', async (request, response) => {
   const blogForDel = await Blog.findById(request.params.id)
   if (!blogForDel) return response.status(404).end()
   const decodedToken = jwt.verify(request.token, process.env.SECRET)
-  console.log('True? ', decodedToken.id.toString() === blogForDel.user.toString())
   if (decodedToken.id.toString() !== blogForDel.user.toString()) return response.status(403).end()
   await blogForDel.remove()
   response.status(204).end()
@@ -44,7 +44,7 @@ blogsRouter.put('/:id', async (request, response) => {
     request.params.id,
     request.body,
     { runValidators: true, context: 'qwery', new: true }
-  )
+  ).populate('user', { name: 1, login: 1 })
   response.status(200).json(updatedBlog)
 })
 

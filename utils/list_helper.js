@@ -1,4 +1,4 @@
-const dummy = blogs => 1
+const dummy = () => 1
 
 const totalLikes = blogs => blogs.reduce((acc, cur) => acc + cur.likes, 0)
 
@@ -9,7 +9,7 @@ const favoriteBlog = blogs => {
     : {}
 }
 
-const countBlogs = blogsArr => {  
+const countBlogs = blogsArr => {
   const authors = []
   blogsArr.forEach(x => {
     const idx = authors.findIndex(author => author['author'] === x.author)
