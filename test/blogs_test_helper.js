@@ -58,9 +58,22 @@ const blogForUpdating = {
   title: 'Title of updated blog',
   author: 'Author of updated blog',
   url: 'URL of updated blog',
-  likes: 222333,
-  user: {}
+  likes: 222333
 }
+
+const blogComments = [
+  'Test comments — 1',
+  'Test comments — 2',
+  'Test comments — 3',
+  'Test comments — 4',
+  'Test comments — 5',
+  'Test comments — 6',
+  'Test comments — 7',
+  'Test comments — 8',
+  'Test comments — 9',
+  'Test comments — 10',
+  'Test comments — 11',
+]
 
 const blogsInDb = async () => {
   const blogs = await Blog.find({})
@@ -83,6 +96,7 @@ module.exports = {
   newBlogWithOutTitle,
   newBlogWithOutUrl,
   blogForUpdating,
+  blogComments,
   blogsInDb,
   userToken
 }

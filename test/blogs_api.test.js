@@ -27,6 +27,7 @@ beforeEach(async () => {
   const blogObjects = blogsHelper.initialBlogs.map(blog => {
     const randomUser = Math.floor(Math.random() * listOfUsers.length)
     blog.user = listOfUsers[randomUser]._id
+    blog.comments = blogsHelper.blogComments.map(comment => ({ text: comment }))
     return new Blog(blog)
   })
   const blogsPromiseArray = blogObjects.map(blog => blog.save())
@@ -106,6 +107,52 @@ describe('Create new Blog', () => {
   })
 })
 
+describe.only('Updating blog', () => {
+  test('Valid updating returns "200"', async () => {
+    const response = await api.get('/api/blogs')
+    let idForUpdate = response.body[response.body.length - 1].id
+    await api
+      .put(`/api/blogs/${idForUpdate}`)
+      .send(blogsHelper.blogForUpdating)
+      .expect(200)
+  })
+
+  test('Correct updating title', async () => {
+    const response = await api.get('/api/blogs')
+    const idForUpdate = response.body[response.body.length - 1].id
+    const updatedBlog = await api
+      .put(`/api/blogs/${idForUpdate}`)
+      .send({ title: blogsHelper.blogForUpdating.title })
+
+    expect(updatedBlog.body.title).toBe(blogsHelper.blogForUpdating.title)
+  })
+
+  test('Correct updating likes', async () => {
+    const response = await api.get('/api/blogs')
+    const idForUpdate = response.body[response.body.length - 1].id
+    const updatedBlog = await api
+      .put(`/api/blogs/${idForUpdate}`)
+      .send({ likes: blogsHelper.blogForUpdating.likes })
+      
+    expect(updatedBlog.body.likes).toBe(blogsHelper.blogForUpdating.likes)
+  })
+    
+  test.only('Correct updating comments', async () => {
+    const response = await api.get('/api/blogs')
+    const forUpdate = response.body[response.body.length - 1]
+    console.log('Dlya: ', forUpdate)
+    // const commentsToAdd = blogsHelper.blogComments.map(c => ({ text: c }))
+    const updatedBlog = await api
+      .put(`/api/blogs/${forUpdate.id}`)
+      .send({ comments: forUpdate.comments.concat({ text: 'ddd' }) })
+    // .send({ comments: commentsToAdd })
+    
+    console.log('Otwet: ', updatedBlog.body)
+    // expect(updatedBlog.body).toEqual(blogsHelper.blogComments)
+  })
+})
+
+
 // describe('Deletion of a note', () => {
 //   test('Succeeds with code "204" if "id" is valid', async () => {
 //     const blogsAtStart = await blogsHelper.blogsInDb()
@@ -128,48 +175,6 @@ describe('Create new Blog', () => {
 //     await api
 //       .delete(`/api/blogs/${notValidId}`)
 //       .expect(400)
-//   })
-// })
-
-// describe('Updating blog', () => {
-//   test('Valid updating returns "200"', async () => {
-//     const response = await api.get('/api/blogs')
-//     const idForUpdate = response.body[response.body.length - 1].id
-//     await api
-//       .put(`/api/blogs/${idForUpdate}`)
-//       .send(blogsHelper.blogForUpdating)
-//       .expect(200)
-//   })
-
-//   test('Correct updating title', async () => {
-//     const response = await api.get('/api/blogs')
-//     const idForUpdate = response.body[response.body.length - 1].id
-//     const updatedBlog = await api
-//       .put(`/api/blogs/${idForUpdate}`)
-//       .send({ title: blogsHelper.blogForUpdating.title })
-
-//     expect(updatedBlog.body.title).toBe(blogsHelper.blogForUpdating.title)
-//   })
-
-//   test('Correct updating likes', async () => {
-//     const response = await api.get('/api/blogs')
-//     const idForUpdate = response.body[response.body.length - 1].id
-//     const updatedBlog = await api
-//       .put(`/api/blogs/${idForUpdate}`)
-//       .send({ likes: blogsHelper.blogForUpdating.likes })
-
-//     expect(updatedBlog.body.likes).toBe(blogsHelper.blogForUpdating.likes)
-//   })
-
-//   test('Correct updating all fields (title, author, url and likes)', async () => {
-//     const response = await api.get('/api/blogs')
-//     const idForUpdate = response.body[response.body.length - 1].id
-//     const updatedBlog = await api
-//       .put(`/api/blogs/${idForUpdate}`)
-//       .send(blogsHelper.blogForUpdating)
-
-//     delete updatedBlog.body.id
-//     expect(updatedBlog.body).toEqual(blogsHelper.blogForUpdating)
 //   })
 // })
 
